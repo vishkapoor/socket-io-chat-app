@@ -11,9 +11,29 @@ http.listen(3000, () => {
 });
 
 io.on('connection', function(socket) {
-    socket.on('created', (data) => {
+
+    io.emit('connections', Object.keys(io.sockets.connected).length);
+
+    socket.on('message-sent', (data) => {
+        console.log("server side:");
         console.log(data);
-       socket.broadcast.emit('created', (data));
+       socket.broadcast.emit('message-sent', (data));
+    });
+
+    socket.on('typing', (data) => {
+       socket.broadcast.emit('typing', data);
+    });
+
+    socket.on('stopped-typing', () => {
+       socket.broadcast.emit('stopped-typing');
+    });
+
+    socket.on('user-joined', (data) => {
+       socket.broadcast.emit('user-joined', data);
+    });
+
+    socket.on('user-left', (data) => {
+       socket.broadcast.emit('user-left', data);
     });
 
 });
